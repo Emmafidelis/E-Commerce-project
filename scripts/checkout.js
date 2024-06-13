@@ -4,9 +4,10 @@ import { formatCurrency } from "./utils/money.js";
 import { deliveryOptions } from "../data/deliveryOptions.js";
 import dayjs from "https://unpkg.com/dayjs@1.11.10/esm/index.js";
 
-let cartSummaryHtml = '';
+function renderOrderSummary() {
+  let cartSummaryHtml = '';
 
-cart.forEach((cartItem) => {
+  cart.forEach((cartItem) => {
   const productId = cartItem.productId;
 
   let matchingProduct;
@@ -69,9 +70,9 @@ cart.forEach((cartItem) => {
       </div>
     </div>
   `
-});
+  });
 
-function deliveryOptionsHTML(matchingProduct, cartItem) {
+  function deliveryOptionsHTML(matchingProduct, cartItem) {
   let html = '';
 
   deliveryOptions.forEach((deliveryOption) => {
@@ -101,11 +102,11 @@ function deliveryOptionsHTML(matchingProduct, cartItem) {
   });
 
   return html;
-}
+  }
 
-document.querySelector('.js-order-summary').innerHTML = cartSummaryHtml;
+  document.querySelector('.js-order-summary').innerHTML = cartSummaryHtml;
 
-document.querySelectorAll('.js-delete-link').forEach((link) => {
+  document.querySelectorAll('.js-delete-link').forEach((link) => {
   link.addEventListener('click', () => {
     const productId = link.dataset.productId;
     removeFromCart(productId);
@@ -113,11 +114,15 @@ document.querySelectorAll('.js-delete-link').forEach((link) => {
     const container = document.querySelector(`.js-cart-item-${productId}`)
     container.remove();
   })
-})
+  })
 
-document.querySelectorAll('.js-delivery-option').forEach((element) => {
+  document.querySelectorAll('.js-delivery-option').forEach((element) => {
   element.addEventListener('click', () => {
     const {productId, deliveryOptionId} = element.dataset;
     updateDeliveryOption(productId, deliveryOptionId)
+    renderOrderSummary();
   })
-})
+  })
+}
+
+renderOrderSummary();
